@@ -21,14 +21,59 @@
   <ItemGroup>
     <ClCompile Include="examples\darknet.c" />
     <ClCompile Include="examples\detector.c" />
+    <ClCompile Include="src\activations.c" />
+    <ClCompile Include="src\activation_layer.c" />
+    <ClCompile Include="src\avgpool_layer.c" />
+    <ClCompile Include="src\batchnorm_layer.c" />
+    <ClCompile Include="src\blas.c" />
+    <ClCompile Include="src\box.c" />
+    <ClCompile Include="src\col2im.c" />
+    <ClCompile Include="src\compare.c" />
+    <ClCompile Include="src\connected_layer.c" />
+    <ClCompile Include="src\convolutional_layer.c" />
+    <ClCompile Include="src\cost_layer.c" />
+    <ClCompile Include="src\crnn_layer.c" />
+    <ClCompile Include="src\crop_layer.c" />
+    <ClCompile Include="src\cuda.c" />
+    <ClCompile Include="src\data.c" />
+    <ClCompile Include="src\deconvolutional_layer.c" />
+    <ClCompile Include="src\demo.c" />
+    <ClCompile Include="src\detection_layer.c" />
+    <ClCompile Include="src\dropout_layer.c" />
+    <ClCompile Include="src\gemm.c" />
+    <ClCompile Include="src\gru_layer.c" />
+    <ClCompile Include="src\im2col.c" />
+    <ClCompile Include="src\image.c" />
+    <ClCompile Include="src\iseg_layer.c" />
+    <ClCompile Include="src\l2norm_layer.c" />
+    <ClCompile Include="src\layer.c" />
+    <ClCompile Include="src\list.c" />
+    <ClCompile Include="src\local_layer.c" />
+    <ClCompile Include="src\logistic_layer.c" />
+    <ClCompile Include="src\lstm_layer.c" />
+    <ClCompile Include="src\matrix.c" />
+    <ClCompile Include="src\maxpool_layer.c" />
+    <ClCompile Include="src\network.c" />
+    <ClCompile Include="src\normalization_layer.c" />
+    <ClCompile Include="src\option_list.c" />
+    <ClCompile Include="src\parser.c" />
+    <ClCompile Include="src\region_layer.c" />
+    <ClCompile Include="src\reorg_layer.c" />
+    <ClCompile Include="src\rnn_layer.c" />
+    <ClCompile Include="src\route_layer.c" />
+    <ClCompile Include="src\shortcut_layer.c" />
+    <ClCompile Include="src\softmax_layer.c" />
     <ClCompile Include="src\time.c" />
+    <ClCompile Include="src\tree.c" />
+    <ClCompile Include="src\upsample_layer.c" />
     <ClCompile Include="src\utils.c" />
+    <ClCompile Include="src\yolo_layer.c" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{A4C43D73-AE0F-4BAE-AEC0-546076ECF4D9}</ProjectGuid>
     <RootNamespace>yolov3</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -86,7 +131,7 @@
       <AdditionalIncludeDirectories>../../pthreads-w32-2-9-1-release/Pre-built.2/include;include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>../../pthreads-w32-2-9-1-release/Pre-built.2/lib/x64</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../../pthreads-w32-2-9-1-release/Pre-built.2/lib/x86</AdditionalLibraryDirectories>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies);pthreadVC2.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
