@@ -34,7 +34,6 @@
     <ClCompile Include="src\cost_layer.c" />
     <ClCompile Include="src\crnn_layer.c" />
     <ClCompile Include="src\crop_layer.c" />
-    <ClCompile Include="src\cuda.c" />
     <ClCompile Include="src\data.c" />
     <ClCompile Include="src\deconvolutional_layer.c" />
     <ClCompile Include="src\demo.c" />
@@ -73,7 +72,7 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{A4C43D73-AE0F-4BAE-AEC0-546076ECF4D9}</ProjectGuid>
     <RootNamespace>yolov3</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -133,6 +132,10 @@
     <Link>
       <AdditionalLibraryDirectories>../../pthreads-w32-2-9-1-release/Pre-built.2/lib/x86</AdditionalLibraryDirectories>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies);pthreadVC2.lib</AdditionalDependencies>
+      <StackCommitSize>
+      </StackCommitSize>
+      <StackReserveSize>
+      </StackReserveSize>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -141,7 +144,13 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>../../pthreads-w32-2-9-1-release/Pre-built.2/include;include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);HAVE_STRUCT_TIMESPEC;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
     </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>../../pthreads-w32-2-9-1-release/Pre-built.2/lib/x64</AdditionalLibraryDirectories>
+      <AdditionalDependencies>pthreadVC2.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>

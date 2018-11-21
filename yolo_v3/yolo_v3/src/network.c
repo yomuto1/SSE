@@ -92,7 +92,7 @@ float get_current_rate(network *net)
     size_t batch_num = get_current_batch(net);
     int i;
     float rate;
-    if (batch_num < net->burn_in) return net->learning_rate * pow((float)batch_num / net->burn_in, net->power);
+    if (batch_num < net->burn_in) return net->learning_rate * (float)pow((float)batch_num / net->burn_in, net->power);
     switch (net->policy) {
         case CONSTANT:
             return net->learning_rate;
@@ -106,11 +106,11 @@ float get_current_rate(network *net)
             }
             return rate;
         case EXP:
-            return net->learning_rate * pow(net->gamma, batch_num);
+            return net->learning_rate * (float)pow(net->gamma, batch_num);
         case POLY:
-            return net->learning_rate * pow(1 - (float)batch_num / net->max_batches, net->power);
+            return net->learning_rate * (float)pow(1 - (float)batch_num / net->max_batches, net->power);
         case RANDOM:
-            return net->learning_rate * pow(rand_uniform(0,1), net->power);
+            return net->learning_rate * (float)pow(rand_uniform(0,1), net->power);
         case SIG:
             return net->learning_rate * (1./(1.+exp(net->gamma*(batch_num - net->step))));
         default:
@@ -673,7 +673,7 @@ void compare_networks(network *n1, network *n2, data test)
         }
     }
     printf("%5d %5d\n%5d %5d\n", a, b, c, d);
-    float num = pow((abs(b - c) - 1.), 2.);
+    float num = (float)pow((abs(b - c) - 1.f), 2.f);
     float den = b + c;
     printf("%f\n", num/den); 
 }

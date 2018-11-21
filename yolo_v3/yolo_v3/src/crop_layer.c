@@ -50,8 +50,8 @@ void resize_crop_layer(layer *l, int w, int h)
     l->w = w;
     l->h = h;
 
-    l->out_w =  l->scale*w;
-    l->out_h =  l->scale*h;
+    l->out_w = (int)(l->scale*w);
+    l->out_h = (int)(l->scale*h);
 
     l->inputs = l->w * l->h * l->c;
     l->outputs = l->out_h * l->out_w * l->out_c;

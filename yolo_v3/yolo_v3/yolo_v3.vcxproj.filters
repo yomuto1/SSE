@@ -60,9 +60,6 @@
     <ClCompile Include="src\crop_layer.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="src\cuda.c">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="src\data.c">
       <Filter>소스 파일</Filter>
     </ClCompile>

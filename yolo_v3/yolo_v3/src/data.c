@@ -195,8 +195,8 @@ void correct_boxes(box_label *boxes, int n, float dx, float dy, float sx, float 
 
         if(flip){
             float swap = boxes[i].left;
-            boxes[i].left = 1. - boxes[i].right;
-            boxes[i].right = 1. - swap;
+            boxes[i].left = 1.f - boxes[i].right;
+            boxes[i].right = 1.f - swap;
         }
 
         boxes[i].left =  constrain(0, 1, boxes[i].left);

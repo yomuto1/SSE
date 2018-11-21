@@ -12,7 +12,7 @@ dropout_layer make_dropout_layer(int batch, int inputs, float probability)
     l.inputs = inputs;
     l.outputs = inputs;
     l.batch = batch;
-    l.rand = calloc(inputs*batch, sizeof(float));
+    l.randval = calloc(inputs*batch, sizeof(float));
     l.scale = 1./(1.-probability);
     l.forward = forward_dropout_layer;
     l.backward = backward_dropout_layer;
@@ -27,7 +27,7 @@ dropout_layer make_dropout_layer(int batch, int inputs, float probability)
 
 void resize_dropout_layer(dropout_layer *l, int inputs)
 {
-    l->rand = realloc(l->rand, l->inputs*l->batch*sizeof(float));
+    l->randval = realloc(l->randval, l->inputs*l->batch*sizeof(float));
     #ifdef GPU
     cuda_free(l->rand_gpu);
 
@@ -41,7 +41,7 @@ void forward_dropout_layer(dropout_layer l, network net)
     if (!net.train) return;
     for(i = 0; i < l.batch * l.inputs; ++i){
         float r = rand_uniform(0, 1);
-        l.rand[i] = r;
+        l.randval[i] = r;
         if(r < l.probability) net.input[i] = 0;
         else net.input[i] *= l.scale;
     }
@@ -52,7 +52,7 @@ void backward_dropout_layer(dropout_layer l, network net)
     int i;
     if(!net.delta) return;
     for(i = 0; i < l.batch * l.inputs; ++i){
-        float r = l.rand[i];
+        float r = l.randval[i];
         if(r < l.probability) net.delta[i] = 0;
         else net.delta[i] *= l.scale;
     }

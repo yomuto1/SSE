@@ -93,7 +93,7 @@ void shortcut_cpu(int batch, int w1, int h1, int c1, float *add, int w2, int h2,
 
 void mean_cpu(float *x, int batch, int filters, int spatial, float *mean)
 {
-    float scale = 1./(batch * spatial);
+    float scale = 1.f/(batch * spatial);
     int i,j,k;
     for(i = 0; i < filters; ++i){
         mean[i] = 0;
@@ -109,14 +109,14 @@ void mean_cpu(float *x, int batch, int filters, int spatial, float *mean)
 
 void variance_cpu(float *x, float *mean, int batch, int filters, int spatial, float *variance)
 {
-    float scale = 1./(batch * spatial - 1);
+    float scale = 1.f/(batch * spatial - 1);
     int i,j,k;
     for(i = 0; i < filters; ++i){
         variance[i] = 0;
         for(j = 0; j < batch; ++j){
             for(k = 0; k < spatial; ++k){
                 int index = j*filters*spatial + i*spatial + k;
-                variance[i] += pow((x[index] - mean[i]), 2);
+                variance[i] += (float)pow((x[index] - mean[i]), 2);
             }
         }
         variance[i] *= scale;
@@ -151,7 +151,7 @@ void normalize_cpu(float *x, float *mean, float *variance, int batch, int filter
         for(f = 0; f < filters; ++f){
             for(i = 0; i < spatial; ++i){
                 int index = b*filters*spatial + f*spatial + i;
-                x[index] = (x[index] - mean[f])/(sqrt(variance[f]) + .000001f);
+                x[index] = (x[index] - mean[f])/((float)sqrt(variance[f]) + .000001f);
             }
         }
     }
@@ -311,7 +311,7 @@ void softmax(float *input, int n, float temp, int stride, float *output)
         if(input[i*stride] > largest) largest = input[i*stride];
     }
     for(i = 0; i < n; ++i){
-        float e = exp(input[i*stride]/temp - largest/temp);
+        float e = (float)exp(input[i*stride]/temp - largest/temp);
         sum += e;
         output[i*stride] = e;
     }

@@ -85,8 +85,8 @@ box get_yolo_box(float *x, float *biases, int n, int index, int i, int j, int lw
     box b;
     b.x = (i + x[index + 0*stride]) / lw;
     b.y = (j + x[index + 1*stride]) / lh;
-    b.w = exp(x[index + 2*stride]) * biases[2*n]   / w;
-    b.h = exp(x[index + 3*stride]) * biases[2*n+1] / h;
+    b.w = (float)exp(x[index + 2*stride]) * biases[2*n]   / w;
+    b.h = (float)exp(x[index + 3*stride]) * biases[2*n+1] / h;
     return b;
 }
 
@@ -97,8 +97,8 @@ float delta_yolo_box(box truth, float *x, float *biases, int n, int index, int i
 
     float tx = (truth.x*lw - i);
     float ty = (truth.y*lh - j);
-    float tw = log(truth.w*w / biases[2*n]);
-    float th = log(truth.h*h / biases[2*n + 1]);
+    float tw = (float)log(truth.w*w / biases[2*n]);
+    float th = (float)log(truth.h*h / biases[2*n + 1]);
 
     delta[index + 0*stride] = scale * (tx - x[index + 0*stride]);
     delta[index + 1*stride] = scale * (ty - x[index + 1*stride]);
@@ -258,8 +258,8 @@ void correct_yolo_boxes(detection *dets, int n, int w, int h, int netw, int neth
     }
     for (i = 0; i < n; ++i){
         box b = dets[i].bbox;
-        b.x =  (b.x - (netw - new_w)/2./netw) / ((float)new_w/netw); 
-        b.y =  (b.y - (neth - new_h)/2./neth) / ((float)new_h/neth); 
+        b.x =  (b.x - (netw - new_w)/2.f/netw) / ((float)new_w/netw); 
+        b.y =  (b.y - (neth - new_h)/2.f/neth) / ((float)new_h/neth); 
         b.w *= (float)netw/new_w;
         b.h *= (float)neth/new_h;
         if(!relative){
@@ -309,7 +309,7 @@ void avg_flipped_yolo(layer l)
         }
     }
     for(i = 0; i < l.outputs; ++i){
-        l.output[i] = (l.output[i] + flip[i])/2.;
+        l.output[i] = (l.output[i] + flip[i])/2.f;
     }
 }
 

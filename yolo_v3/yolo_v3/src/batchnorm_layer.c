@@ -96,7 +96,7 @@ void mean_delta_cpu(float *delta, float *variance, int batch, int filters, int s
                 mean_delta[i] += delta[index];
             }
         }
-        mean_delta[i] *= (-1./sqrt(variance[i] + .00001f));
+        mean_delta[i] *= (-1./ (float)sqrt(variance[i] + .00001f));
     }
 }
 void  variance_delta_cpu(float *x, float *delta, float *mean, float *variance, int batch, int filters, int spatial, float *variance_delta)
@@ -111,7 +111,7 @@ void  variance_delta_cpu(float *x, float *delta, float *mean, float *variance, i
                 variance_delta[i] += delta[index]*(x[index] - mean[i]);
             }
         }
-        variance_delta[i] *= -.5 * pow(variance[i] + .00001f, (float)(-3./2.));
+        variance_delta[i] *= -.5 * (float)pow(variance[i] + .00001f, (float)(-3.f/2.f));
     }
 }
 void normalize_delta_cpu(float *x, float *mean, float *variance, float *mean_delta, float *variance_delta, int batch, int filters, int spatial, float *delta)
@@ -121,7 +121,7 @@ void normalize_delta_cpu(float *x, float *mean, float *variance, float *mean_del
         for(f = 0; f < filters; ++f){
             for(k = 0; k < spatial; ++k){
                 int index = j*filters*spatial + f*spatial + k;
-                delta[index] = delta[index] * 1./(sqrt(variance[f] + .00001f)) + variance_delta[f] * 2. * (x[index] - mean[f]) / (spatial * batch) + mean_delta[f]/(spatial*batch);
+                delta[index] = delta[index] * 1.f/((float)sqrt(variance[f] + .00001f)) + variance_delta[f] * 2. * (x[index] - mean[f]) / (spatial * batch) + mean_delta[f]/(spatial*batch);
             }
         }
     }
@@ -140,10 +140,10 @@ void forward_batchnorm_layer(layer l, network net)
         mean_cpu(l.output, l.batch, l.out_c, l.out_h*l.out_w, l.mean);
         variance_cpu(l.output, l.mean, l.batch, l.out_c, l.out_h*l.out_w, l.variance);
 
-        scal_cpu(l.out_c, .99, l.rolling_mean, 1);
-        axpy_cpu(l.out_c, .01, l.mean, 1, l.rolling_mean, 1);
-        scal_cpu(l.out_c, .99, l.rolling_variance, 1);
-        axpy_cpu(l.out_c, .01, l.variance, 1, l.rolling_variance, 1);
+        scal_cpu(l.out_c, .99f, l.rolling_mean, 1);
+        axpy_cpu(l.out_c, .01f, l.mean, 1, l.rolling_mean, 1);
+        scal_cpu(l.out_c, .99f, l.rolling_variance, 1);
+        axpy_cpu(l.out_c, .01f, l.variance, 1, l.rolling_variance, 1);
 
         normalize_cpu(l.output, l.mean, l.variance, l.batch, l.out_c, l.out_h*l.out_w);   
         copy_cpu(l.outputs*l.batch, l.output, 1, l.x_norm, 1);

@@ -78,8 +78,8 @@ box get_region_box(float *x, float *biases, int n, int index, int i, int j, int 
     box b;
     b.x = (i + x[index + 0*stride]) / w;
     b.y = (j + x[index + 1*stride]) / h;
-    b.w = exp(x[index + 2*stride]) * biases[2*n]   / w;
-    b.h = exp(x[index + 3*stride]) * biases[2*n+1] / h;
+    b.w = (float)exp(x[index + 2*stride]) * biases[2*n]   / w;
+    b.h = (float)exp(x[index + 3*stride]) * biases[2*n+1] / h;
     return b;
 }
 
@@ -90,8 +90,8 @@ float delta_region_box(box truth, float *x, float *biases, int n, int index, int
 
     float tx = (truth.x*w - i);
     float ty = (truth.y*h - j);
-    float tw = log(truth.w*w / biases[2*n]);
-    float th = log(truth.h*h / biases[2*n + 1]);
+    float tw = (float)log(truth.w*w / biases[2*n]);
+    float th = (float)log(truth.h*h / biases[2*n + 1]);
 
     delta[index + 0*stride] = scale * (tx - x[index + 0*stride]);
     delta[index + 1*stride] = scale * (ty - x[index + 1*stride]);
@@ -140,7 +140,7 @@ void delta_region_class(float *output, float *delta, int index, int class, int c
 
 float logit(float x)
 {
-    return log(x/(1.-x));
+    return (float)log(x/(1.-x));
 }
 
 float tisnan(float x)
@@ -219,7 +219,7 @@ void forward_region_layer(const layer l, network net)
                     int class_index = entry_index(l, b, maxi, l.coords + 1);
                     int obj_index = entry_index(l, b, maxi, l.coords);
                     delta_region_class(l.output, l.delta, class_index, class, l.classes, l.softmax_tree, l.class_scale, l.w*l.h, &avg_cat, !l.softmax);
-                    if(l.output[obj_index] < .3) l.delta[obj_index] = l.object_scale * (.3 - l.output[obj_index]);
+                    if(l.output[obj_index] < .3f) l.delta[obj_index] = l.object_scale * (.3f - l.output[obj_index]);
                     else  l.delta[obj_index] = 0;
                     l.delta[obj_index] = 0;
                     ++class_count;
@@ -257,7 +257,7 @@ void forward_region_layer(const layer l, network net)
                         truth.y = (j + .5)/l.h;
                         truth.w = l.biases[2*n]/l.w;
                         truth.h = l.biases[2*n+1]/l.h;
-                        delta_region_box(truth, l.output, l.biases, n, box_index, i, j, l.w, l.h, l.delta, .01, l.w*l.h);
+                        delta_region_box(truth, l.output, l.biases, n, box_index, i, j, l.w, l.h, l.delta, .01f, l.w*l.h);
                     }
                 }
             }

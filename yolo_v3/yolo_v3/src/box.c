@@ -234,10 +234,10 @@ void test_dunion()
     float yinter = box_union(dya, b);
     float winter = box_union(dwa, b);
     float hinter = box_union(dha, b);
-    xinter = (xinter - inter)/(.0001);
-    yinter = (yinter - inter)/(.0001);
-    winter = (winter - inter)/(.0001);
-    hinter = (hinter - inter)/(.0001);
+    xinter = (xinter - inter)/(.0001f);
+    yinter = (yinter - inter)/(.0001f);
+    winter = (winter - inter)/(.0001f);
+    hinter = (hinter - inter)/(.0001f);
     printf("Union Manual %f %f %f %f\n", xinter, yinter, winter, hinter);
 }
 void test_dintersect()

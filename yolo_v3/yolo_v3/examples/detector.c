@@ -13,7 +13,7 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
     double time;
     char buff[256];
     char *input = buff;
-    float nms=.45;
+    float nms=.45f;
     while(1){
         if(filename){
             strncpy(input, filename, 256);

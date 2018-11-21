@@ -214,7 +214,7 @@ struct layer{
     int   * map;
     int   * counts;
     float ** sums;
-    //float * rand;
+    float * randval;
     float * cost;
     float * state;
     float * prev_state;

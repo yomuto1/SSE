@@ -104,7 +104,7 @@ void forward_iseg_layer(const layer l, network net)
         for(i = 0; i < ids; ++i){
             for(k = 0; k < l.w*l.h; ++k){
                 int index = b*l.outputs + (i+l.classes)*l.w*l.h + k;
-                l.delta[index] = .1 * (0 - l.output[index]);
+                l.delta[index] = .1f * (0 - l.output[index]);
             }
         }
 
@@ -183,7 +183,7 @@ void forward_iseg_layer(const layer l, network net)
         for(i = 0; i < ids; ++i){
             for(k = 0; k < l.w*l.h; ++k){
                 int index = b*l.outputs + (i+l.classes)*l.w*l.h + k;
-                l.delta[index] *= .01;
+                l.delta[index] *= .01f;
             }
         }
     }
