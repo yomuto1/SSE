@@ -307,12 +307,12 @@ void load_rle(image im, int *rle, int n)
     int i,j;
     for(i = 0; i < n; ++i){
         for(j = 0; j < rle[i]; ++j){
-            im.data[count++] = curr;
+            im.data[count++] = (float)curr;
         }
         curr = 1 - curr;
     }
     for(; count < im.h*im.w*im.c; ++count){
-        im.data[count] = curr;
+        im.data[count] = (float)curr;
     }
 }
 
@@ -356,7 +356,7 @@ box bound_image(image im)
             }
         }
     }
-    box b = {minx, miny, maxx-minx + 1, maxy-miny + 1};
+    box b = { (float)minx, (float)miny, (float)(maxx-minx + 1), (float)(maxy-miny + 1)};
     //printf("%f %f %f %f\n", b.x, b.y, b.w, b.h);
     return b;
 }
@@ -384,7 +384,7 @@ void fill_truth_iseg(char *path, int num_boxes, float *truth, int classes, int w
         if(flip) flip_image(sized);
 
         image mask = resize_image(sized, mw, mh);
-        truth[i*(mw*mh+1)] = id;
+        truth[i*(mw*mh+1)] = (float)id;
         for(j = 0; j < mw*mh; ++j){
             truth[i*(mw*mh + 1) + 1 + j] = mask.data[j];
         }
@@ -423,15 +423,15 @@ void fill_truth_mask(char *path, int num_boxes, float *truth, int classes, int w
         if(b.w > 0){
             image crop = crop_image(sized, b.x, b.y, b.w, b.h);
             image mask = resize_image(crop, mw, mh);
-            truth[i*(4 + mw*mh + 1) + 0] = (b.x + b.w/2.)/sized.w;
-            truth[i*(4 + mw*mh + 1) + 1] = (b.y + b.h/2.)/sized.h;
+            truth[i*(4 + mw*mh + 1) + 0] = (b.x + b.w/2.f)/sized.w;
+            truth[i*(4 + mw*mh + 1) + 1] = (b.y + b.h/2.f)/sized.h;
             truth[i*(4 + mw*mh + 1) + 2] = b.w/sized.w;
             truth[i*(4 + mw*mh + 1) + 3] = b.h/sized.h;
             int j;
             for(j = 0; j < mw*mh; ++j){
                 truth[i*(4 + mw*mh + 1) + 4 + j] = mask.data[j];
             }
-            truth[i*(4 + mw*mh + 1) + 4 + mw*mh] = id;
+            truth[i*(4 + mw*mh + 1) + 4 + mw*mh] = (float)id;
             free_image(crop);
             free_image(mask);
             ++i;
@@ -481,7 +481,7 @@ void fill_truth_detection(char *path, int num_boxes, float *truth, int classes, 
         truth[(i-sub)*5+1] = y;
         truth[(i-sub)*5+2] = w;
         truth[(i-sub)*5+3] = h;
-        truth[(i-sub)*5+4] = id;
+        truth[(i-sub)*5+4] = (float)id;
     }
     free(boxes);
 }
@@ -907,7 +907,7 @@ data load_data_region(int n, char **paths, int m, int w, int h, int size, int cl
         random_distort_image(sized, hue, saturation, exposure);
         d.X.vals[i] = sized.data;
 
-        fill_truth_region(random_paths[i], d.y.vals[i], classes, size, flip, dx, dy, 1./sx, 1./sy);
+        fill_truth_region(random_paths[i], d.y.vals[i], classes, size, flip, dx, dy, 1.f/sx, 1.f/sy);
 
         free_image(orig);
         free_image(cropped);
@@ -1025,7 +1025,7 @@ data load_data_swag(char **paths, int n, int classes, float jitter)
     if(flip) flip_image(sized);
     d.X.vals[0] = sized.data;
 
-    fill_truth_swag(random_path, d.y.vals[0], classes, flip, dx, dy, 1./sx, 1./sy);
+    fill_truth_swag(random_path, d.y.vals[0], classes, flip, dx, dy, 1.f/sx, 1.f/sy);
 
     free_image(orig);
     free_image(cropped);
@@ -1437,10 +1437,10 @@ data load_cifar10_data(char *filename)
         int class = bytes[0];
         y.vals[i][class] = 1;
         for(j = 0; j < X.cols; ++j){
-            X.vals[i][j] = (double)bytes[j+1];
+            X.vals[i][j] = (float)bytes[j+1];
         }
     }
-    scale_data_rows(d, 1./255);
+    scale_data_rows(d, 1.f/255.f);
     //normalize_data_rows(d);
     fclose(fp);
     return d;
@@ -1469,8 +1469,8 @@ void get_next_batch(data d, int n, int offset, float *X, float *y)
 void smooth_data(data d)
 {
     int i, j;
-    float scale = 1. / d.y.cols;
-    float eps = .1;
+    float scale = 1.f / d.y.cols;
+    float eps = .1f;
     for(i = 0; i < d.y.rows; ++i){
         for(j = 0; j < d.y.cols; ++j){
             d.y.vals[i][j] = eps * scale + (1-eps) * d.y.vals[i][j];
@@ -1500,13 +1500,13 @@ data load_all_cifar10()
             int class = bytes[0];
             y.vals[i+b*10000][class] = 1;
             for(j = 0; j < X.cols; ++j){
-                X.vals[i+b*10000][j] = (double)bytes[j+1];
+                X.vals[i+b*10000][j] = (float)bytes[j+1];
             }
         }
         fclose(fp);
     }
     //normalize_data_rows(d);
-    scale_data_rows(d, 1./255);
+    scale_data_rows(d, 1.f/255.f);
     smooth_data(d);
     return d;
 }

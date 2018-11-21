@@ -183,10 +183,10 @@ float box_iou(box a, box b)
 
 float box_rmse(box a, box b)
 {
-    return sqrt(pow(a.x-b.x, 2) + 
-                pow(a.y-b.y, 2) + 
-                pow(a.w-b.w, 2) + 
-                pow(a.h-b.h, 2));
+    return sqrtf(powf(a.x-b.x, 2) + 
+                powf(a.y-b.y, 2) + 
+                powf(a.w-b.w, 2) + 
+                powf(a.h-b.h, 2));
 }
 
 dbox dintersect(box a, box b)
@@ -221,12 +221,12 @@ dbox dunion(box a, box b)
 void test_dunion()
 {
     box a = {0, 0, 1, 1};
-    box dxa= {0+.0001, 0, 1, 1};
-    box dya= {0, 0+.0001, 1, 1};
-    box dwa= {0, 0, 1+.0001, 1};
-    box dha= {0, 0, 1, 1+.0001};
+    box dxa= {0+.0001f, 0, 1, 1};
+    box dya= {0, 0+.0001f, 1, 1};
+    box dwa= {0, 0, 1+.0001f, 1};
+    box dha= {0, 0, 1, 1+.0001f};
 
-    box b = {.5, .5, .2, .2};
+    box b = {.5f, .5f, .2f, .2f};
     dbox di = dunion(a,b);
     printf("Union: %f %f %f %f\n", di.dx, di.dy, di.dw, di.dh);
     float inter =  box_union(a, b);
@@ -243,12 +243,12 @@ void test_dunion()
 void test_dintersect()
 {
     box a = {0, 0, 1, 1};
-    box dxa= {0+.0001, 0, 1, 1};
-    box dya= {0, 0+.0001, 1, 1};
-    box dwa= {0, 0, 1+.0001, 1};
-    box dha= {0, 0, 1, 1+.0001};
+    box dxa= {0+.0001f, 0, 1, 1};
+    box dya= {0, 0+.0001f, 1, 1};
+    box dwa= {0, 0, 1+.0001f, 1};
+    box dha= {0, 0, 1, 1+.0001f};
 
-    box b = {.5, .5, .2, .2};
+    box b = {.5f, .5f, .2f, .2f};
     dbox di = dintersect(a,b);
     printf("Inter: %f %f %f %f\n", di.dx, di.dy, di.dw, di.dh);
     float inter =  box_intersection(a, b);
@@ -256,10 +256,10 @@ void test_dintersect()
     float yinter = box_intersection(dya, b);
     float winter = box_intersection(dwa, b);
     float hinter = box_intersection(dha, b);
-    xinter = (xinter - inter)/(.0001);
-    yinter = (yinter - inter)/(.0001);
-    winter = (winter - inter)/(.0001);
-    hinter = (hinter - inter)/(.0001);
+    xinter = (xinter - inter)/(.0001f);
+    yinter = (yinter - inter)/(.0001f);
+    winter = (winter - inter)/(.0001f);
+    hinter = (hinter - inter)/(.0001f);
     printf("Inter Manual %f %f %f %f\n", xinter, yinter, winter, hinter);
 }
 
@@ -268,12 +268,12 @@ void test_box()
     test_dintersect();
     test_dunion();
     box a = {0, 0, 1, 1};
-    box dxa= {0+.00001, 0, 1, 1};
-    box dya= {0, 0+.00001, 1, 1};
-    box dwa= {0, 0, 1+.00001, 1};
-    box dha= {0, 0, 1, 1+.00001};
+    box dxa= {0+.00001f, 0, 1, 1};
+    box dya= {0, 0+.00001f, 1, 1};
+    box dwa= {0, 0, 1+.00001f, 1};
+    box dha= {0, 0, 1, 1+.00001f};
 
-    box b = {.5, 0, .2, .2};
+    box b = {.5f, 0, .2f, .2f};
 
     float iou = box_iou(a,b);
     iou = (1-iou)*(1-iou);
@@ -285,10 +285,10 @@ void test_box()
     float yiou = box_iou(dya, b);
     float wiou = box_iou(dwa, b);
     float hiou = box_iou(dha, b);
-    xiou = ((1-xiou)*(1-xiou) - iou)/(.00001);
-    yiou = ((1-yiou)*(1-yiou) - iou)/(.00001);
-    wiou = ((1-wiou)*(1-wiou) - iou)/(.00001);
-    hiou = ((1-hiou)*(1-hiou) - iou)/(.00001);
+    xiou = ((1-xiou)*(1-xiou) - iou)/(.00001f);
+    yiou = ((1-yiou)*(1-yiou) - iou)/(.00001f);
+    wiou = ((1-wiou)*(1-wiou) - iou)/(.00001f);
+    hiou = ((1-hiou)*(1-hiou) - iou)/(.00001f);
     printf("manual %f %f %f %f\n", xiou, yiou, wiou, hiou);
 }
 
@@ -308,10 +308,10 @@ dbox diou(box a, box b)
         return dd;
     }
 
-    dd.dx = 2*pow((1-(i/u)),1)*(di.dx*u - du.dx*i)/(u*u);
-    dd.dy = 2*pow((1-(i/u)),1)*(di.dy*u - du.dy*i)/(u*u);
-    dd.dw = 2*pow((1-(i/u)),1)*(di.dw*u - du.dw*i)/(u*u);
-    dd.dh = 2*pow((1-(i/u)),1)*(di.dh*u - du.dh*i)/(u*u);
+    dd.dx = 2*powf((1-(i/u)),1)*(di.dx*u - du.dx*i)/(u*u);
+    dd.dy = 2*powf((1-(i/u)),1)*(di.dy*u - du.dy*i)/(u*u);
+    dd.dw = 2*powf((1-(i/u)),1)*(di.dw*u - du.dw*i)/(u*u);
+    dd.dh = 2*powf((1-(i/u)),1)*(di.dh*u - du.dh*i)/(u*u);
     return dd;
 }
 
@@ -341,8 +341,8 @@ box encode_box(box b, box anchor)
     box encode;
     encode.x = (b.x - anchor.x) / anchor.w;
     encode.y = (b.y - anchor.y) / anchor.h;
-    encode.w = log2(b.w / anchor.w);
-    encode.h = log2(b.h / anchor.h);
+    encode.w = log2f(b.w / anchor.w);
+    encode.h = log2f(b.h / anchor.h);
     return encode;
 }
 
@@ -351,7 +351,7 @@ box decode_box(box b, box anchor)
     box decode;
     decode.x = b.x * anchor.w + anchor.x;
     decode.y = b.y * anchor.h + anchor.y;
-    decode.w = pow(2., b.w) * anchor.w;
-    decode.h = pow(2., b.h) * anchor.h;
+    decode.w = powf(2., b.w) * anchor.w;
+    decode.h = powf(2., b.h) * anchor.h;
     return decode;
 }

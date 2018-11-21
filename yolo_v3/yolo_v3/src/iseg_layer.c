@@ -138,7 +138,7 @@ void forward_iseg_layer(const layer l, network net)
                     float sum = 0;
                     for(z = 0; z < ids; ++z){
                         int index = b*l.outputs + (l.classes + z)*l.w*l.h + k;
-                        sum += pow(l.sums[i][z]/l.counts[i] - l.output[index], 2);
+                        sum += powf(l.sums[i][z]/l.counts[i] - l.output[index], 2);
                     }
                     mse[i] += sum;
                 }
@@ -172,8 +172,8 @@ void forward_iseg_layer(const layer l, network net)
                         for(z = 0; z < ids; ++z){
                             int index = b*l.outputs + (l.classes + z)*l.w*l.h + k;
                             float diff = l.sums[j][z] - l.output[index];
-                            if (j == i) l.delta[index] +=   diff < 0? -.1 : .1;
-                            else        l.delta[index] += -(diff < 0? -.1 : .1);
+                            if (j == i) l.delta[index] +=   diff < 0? -.1f : .1f;
+                            else        l.delta[index] += -(diff < 0? -.1f : .1f);
                         }
                     }
                 }
@@ -188,7 +188,7 @@ void forward_iseg_layer(const layer l, network net)
         }
     }
 
-    *(l.cost) = pow(mag_array(l.delta, l.outputs * l.batch), 2);
+    *(l.cost) = powf(mag_array(l.delta, l.outputs * l.batch), 2);
     printf("took %lf sec\n", what_time_is_it_now() - time);
 }
 

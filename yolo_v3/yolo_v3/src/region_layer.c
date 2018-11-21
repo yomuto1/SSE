@@ -78,8 +78,8 @@ box get_region_box(float *x, float *biases, int n, int index, int i, int j, int 
     box b;
     b.x = (i + x[index + 0*stride]) / w;
     b.y = (j + x[index + 1*stride]) / h;
-    b.w = (float)exp(x[index + 2*stride]) * biases[2*n]   / w;
-    b.h = (float)exp(x[index + 3*stride]) * biases[2*n+1] / h;
+    b.w = expf(x[index + 2*stride]) * biases[2*n]   / w;
+    b.h = expf(x[index + 3*stride]) * biases[2*n+1] / h;
     return b;
 }
 
@@ -145,7 +145,7 @@ float logit(float x)
 
 float tisnan(float x)
 {
-    return (x != x);
+    return (float)(x != x);
 }
 
 int entry_index(layer l, int batch, int location, int entry)
@@ -253,8 +253,8 @@ void forward_region_layer(const layer l, network net)
 
                     if(*(net.seen) < 12800){
                         box truth = {0};
-                        truth.x = (i + .5)/l.w;
-                        truth.y = (j + .5)/l.h;
+                        truth.x = (i + .5f)/l.w;
+                        truth.y = (j + .5f)/l.h;
                         truth.w = l.biases[2*n]/l.w;
                         truth.h = l.biases[2*n+1]/l.h;
                         delta_region_box(truth, l.output, l.biases, n, box_index, i, j, l.w, l.h, l.delta, .01f, l.w*l.h);
@@ -316,7 +316,7 @@ void forward_region_layer(const layer l, network net)
             ++class_count;
         }
     }
-    *(l.cost) = pow(mag_array(l.delta, l.outputs * l.batch), 2);
+    *(l.cost) = powf(mag_array(l.delta, l.outputs * l.batch), 2);
     printf("Region Avg IOU: %f, Class: %f, Obj: %f, No Obj: %f, Avg Recall: %f,  count: %d\n", avg_iou/count, avg_cat/class_count, avg_obj/count, avg_anyobj/(l.w*l.h*l.n*l.batch), recall/count, count);
 }
 
@@ -347,8 +347,8 @@ void correct_region_boxes(detection *dets, int n, int w, int h, int netw, int ne
     }
     for (i = 0; i < n; ++i){
         box b = dets[i].bbox;
-        b.x =  (b.x - (netw - new_w)/2./netw) / ((float)new_w/netw); 
-        b.y =  (b.y - (neth - new_h)/2./neth) / ((float)new_h/neth); 
+        b.x =  (b.x - (netw - new_w)/2.f/netw) / ((float)new_w/netw); 
+        b.y =  (b.y - (neth - new_h)/2.f/neth) / ((float)new_h/neth); 
         b.w *= (float)netw/new_w;
         b.h *= (float)neth/new_h;
         if(!relative){
@@ -385,7 +385,7 @@ void get_region_detections(layer l, int w, int h, int netw, int neth, float thre
             }
         }
         for(i = 0; i < l.outputs; ++i){
-            l.output[i] = (l.output[i] + flip[i])/2.;
+            l.output[i] = (l.output[i] + flip[i])/2.f;
         }
     }
     for (i = 0; i < l.w*l.h; ++i){

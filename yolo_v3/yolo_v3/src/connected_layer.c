@@ -43,7 +43,7 @@ layer make_connected_layer(int batch, int inputs, int outputs, ACTIVATION activa
     l.update = update_connected_layer;
 
     //float scale = 1./sqrt(inputs);
-    float scale = sqrt(2./inputs);
+    float scale = sqrtf(2.f/inputs);
     for(i = 0; i < outputs*inputs; ++i){
         l.weights[i] = scale*rand_uniform(-1, 1);
     }
@@ -200,7 +200,7 @@ void denormalize_connected_layer(layer l)
 {
     int i, j;
     for(i = 0; i < l.outputs; ++i){
-        float scale = l.scales[i]/sqrt(l.rolling_variance[i] + .000001);
+        float scale = l.scales[i]/sqrtf(l.rolling_variance[i] + .000001f);
         for(j = 0; j < l.inputs; ++j){
             l.weights[i*l.inputs + j] *= scale;
         }

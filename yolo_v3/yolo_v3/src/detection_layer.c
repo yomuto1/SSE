@@ -82,7 +82,7 @@ void forward_detection_layer(const detection_layer l, network net)
                 for (j = 0; j < l.n; ++j) {
                     int p_index = index + locations*l.classes + i*l.n + j;
                     l.delta[p_index] = l.noobject_scale*(0 - l.output[p_index]);
-                    *(l.cost) += l.noobject_scale*pow(l.output[p_index], 2);
+                    *(l.cost) += l.noobject_scale*powf(l.output[p_index], 2);
                     avg_anyobj += l.output[p_index];
                 }
 
@@ -97,7 +97,7 @@ void forward_detection_layer(const detection_layer l, network net)
                 int class_index = index + i*l.classes;
                 for(j = 0; j < l.classes; ++j) {
                     l.delta[class_index+j] = l.class_scale * (net.truth[truth_index+1+j] - l.output[class_index+j]);
-                    *(l.cost) += l.class_scale * pow(net.truth[truth_index+1+j] - l.output[class_index+j], 2);
+                    *(l.cost) += l.class_scale * powf(net.truth[truth_index+1+j] - l.output[class_index+j], 2);
                     if(net.truth[truth_index + 1 + j]) avg_cat += l.output[class_index+j];
                     avg_allcat += l.output[class_index+j];
                 }
@@ -158,10 +158,10 @@ void forward_detection_layer(const detection_layer l, network net)
 
                 //printf("%d,", best_index);
                 int p_index = index + locations*l.classes + i*l.n + best_index;
-                *(l.cost) -= l.noobject_scale * pow(l.output[p_index], 2);
-                *(l.cost) += l.object_scale * pow(1-l.output[p_index], 2);
+                *(l.cost) -= l.noobject_scale * powf(l.output[p_index], 2);
+                *(l.cost) += l.object_scale * powf(1-l.output[p_index], 2);
                 avg_obj += l.output[p_index];
-                l.delta[p_index] = l.object_scale * (1.-l.output[p_index]);
+                l.delta[p_index] = l.object_scale * (1.f-l.output[p_index]);
 
                 if(l.rescore){
                     l.delta[p_index] = l.object_scale * (iou - l.output[p_index]);
@@ -172,11 +172,11 @@ void forward_detection_layer(const detection_layer l, network net)
                 l.delta[box_index+2] = l.coord_scale*(net.truth[tbox_index + 2] - l.output[box_index + 2]);
                 l.delta[box_index+3] = l.coord_scale*(net.truth[tbox_index + 3] - l.output[box_index + 3]);
                 if(l.sqrt){
-                    l.delta[box_index+2] = l.coord_scale*(sqrt(net.truth[tbox_index + 2]) - l.output[box_index + 2]);
-                    l.delta[box_index+3] = l.coord_scale*(sqrt(net.truth[tbox_index + 3]) - l.output[box_index + 3]);
+                    l.delta[box_index+2] = l.coord_scale*(sqrtf(net.truth[tbox_index + 2]) - l.output[box_index + 2]);
+                    l.delta[box_index+3] = l.coord_scale*(sqrtf(net.truth[tbox_index + 3]) - l.output[box_index + 3]);
                 }
 
-                *(l.cost) += pow(1-iou, 2);
+                *(l.cost) += powf(1-iou, 2);
                 avg_iou += iou;
                 ++count;
             }
@@ -209,7 +209,7 @@ void forward_detection_layer(const detection_layer l, network net)
         }
 
 
-        *(l.cost) = pow(mag_array(l.delta, l.outputs * l.batch), 2);
+        *(l.cost) = powf(mag_array(l.delta, l.outputs * l.batch), 2);
 
 
         printf("Detection Avg IOU: %f, Pos Cat: %f, All Cat: %f, Pos Obj: %f, Any Obj: %f, count: %d\n", avg_iou/count, avg_cat/count, avg_allcat/(count*l.classes), avg_obj/count, avg_anyobj/(l.batch*locations*l.n), count);
@@ -238,8 +238,8 @@ void get_detection_detections(layer l, int w, int h, float thresh, detection *de
             box b;
             b.x = (predictions[box_index + 0] + col) / l.side * w;
             b.y = (predictions[box_index + 1] + row) / l.side * h;
-            b.w = pow(predictions[box_index + 2], (l.sqrt?2:1)) * w;
-            b.h = pow(predictions[box_index + 3], (l.sqrt?2:1)) * h;
+            b.w = powf((float)predictions[box_index + 2], (float)(l.sqrt?2:1)) * w;
+            b.h = powf((float)predictions[box_index + 3], (float)(l.sqrt?2:1)) * h;
             dets[index].bbox = b;
             dets[index].objectness = scale;
             for(j = 0; j < l.classes; ++j){

@@ -14,7 +14,7 @@ void validate_compare(char *filename, char *weightfile)
     if(weightfile){
         load_weights(net, weightfile);
     }
-    srand(time(0));
+    srand((unsigned int)time(0));
 
     list *plist = get_paths("data/compare.val.list");
     //list *plist = get_paths("data/compare.val.old");
@@ -122,8 +122,8 @@ int bbox_comparator(const void *a, const void *b)
 void bbox_update(sortable_bbox *a, sortable_bbox *b, int class, int result)
 {
     int k = 32;
-    float EA = 1./(1+pow(10, (b->elos[class] - a->elos[class])/400.));
-    float EB = 1./(1+pow(10, (a->elos[class] - b->elos[class])/400.));
+    float EA = 1.f/(1+powf(10, (b->elos[class] - a->elos[class])/400.f));
+    float EB = 1.f/(1+powf(10, (a->elos[class] - b->elos[class])/400.f));
     float SA = result ? 1.f : 0;
     float SB = result ? 0 : 1.f;
     a->elos[class] += k*(SA - EA);

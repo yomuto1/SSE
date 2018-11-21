@@ -116,7 +116,7 @@ void variance_cpu(float *x, float *mean, int batch, int filters, int spatial, fl
         for(j = 0; j < batch; ++j){
             for(k = 0; k < spatial; ++k){
                 int index = j*filters*spatial + i*spatial + k;
-                variance[i] += (float)pow((x[index] - mean[i]), 2);
+                variance[i] += powf((x[index] - mean[i]), 2);
             }
         }
         variance[i] *= scale;
@@ -151,7 +151,7 @@ void normalize_cpu(float *x, float *mean, float *variance, int batch, int filter
         for(f = 0; f < filters; ++f){
             for(i = 0; i < spatial; ++i){
                 int index = b*filters*spatial + f*spatial + i;
-                x[index] = (x[index] - mean[f])/((float)sqrt(variance[f]) + .000001f);
+                x[index] = (x[index] - mean[f])/(sqrtf(variance[f]) + .000001f);
             }
         }
     }
@@ -172,7 +172,7 @@ void mul_cpu(int N, float *X, int INCX, float *Y, int INCY)
 void pow_cpu(int N, float ALPHA, float *X, int INCX, float *Y, int INCY)
 {
     int i;
-    for(i = 0; i < N; ++i) Y[i*INCY] = pow(X[i*INCX], ALPHA);
+    for(i = 0; i < N; ++i) Y[i*INCY] = powf(X[i*INCX], ALPHA);
 }
 
 void axpy_cpu(int N, float ALPHA, float *X, int INCX, float *Y, int INCY)
@@ -240,14 +240,14 @@ void smooth_l1_cpu(int n, float *pred, float *truth, float *delta, float *error)
     int i;
     for(i = 0; i < n; ++i){
         float diff = truth[i] - pred[i];
-        float abs_val = fabs(diff);
+        float abs_val = fabsf(diff);
         if(abs_val < 1) {
             error[i] = diff * diff;
             delta[i] = diff;
         }
         else {
             error[i] = 2*abs_val - 1;
-            delta[i] = (diff < 0) ? 1 : -1;
+            delta[i] = (diff < 0) ? 1.f : -1.f;
         }
     }
 }
@@ -257,8 +257,8 @@ void l1_cpu(int n, float *pred, float *truth, float *delta, float *error)
     int i;
     for(i = 0; i < n; ++i){
         float diff = truth[i] - pred[i];
-        error[i] = fabs(diff);
-        delta[i] = diff > 0 ? 1 : -1;
+        error[i] = fabsf(diff);
+        delta[i] = diff > 0 ? 1.f : -1.f;
     }
 }
 
@@ -268,7 +268,7 @@ void softmax_x_ent_cpu(int n, float *pred, float *truth, float *delta, float *er
     for(i = 0; i < n; ++i){
         float t = truth[i];
         float p = pred[i];
-        error[i] = (t) ? -log(p) : 0;
+        error[i] = (t) ? -logf(p) : 0;
         delta[i] = t-p;
     }
 }
@@ -279,7 +279,7 @@ void logistic_x_ent_cpu(int n, float *pred, float *truth, float *delta, float *e
     for(i = 0; i < n; ++i){
         float t = truth[i];
         float p = pred[i];
-        error[i] = -t*log(p) - (1-t)*log(1-p);
+        error[i] = -t*logf(p) - (1.f-t)*logf(1.f-p);
         delta[i] = t-p;
     }
 }
@@ -311,7 +311,7 @@ void softmax(float *input, int n, float temp, int stride, float *output)
         if(input[i*stride] > largest) largest = input[i*stride];
     }
     for(i = 0; i < n; ++i){
-        float e = (float)exp(input[i*stride]/temp - largest/temp);
+        float e = expf(input[i*stride]/temp - largest/temp);
         sum += e;
         output[i*stride] = e;
     }

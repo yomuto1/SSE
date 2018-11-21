@@ -315,7 +315,7 @@ layer parse_yolo(list *options, size_params params)
     assert(l.outputs == params.inputs);
 
     l.max_boxes = option_find_int_quiet(options, "max",90);
-    l.jitter = option_find_float(options, "jitter", .2);
+    l.jitter = option_find_float(options, "jitter", .2f);
 
     l.ignore_thresh = option_find_float(options, "ignore_thresh", .5);
     l.truth_thresh = option_find_float(options, "truth_thresh", 1);
@@ -365,7 +365,7 @@ layer parse_region(list *options, size_params params)
     l.softmax = option_find_int(options, "softmax", 0);
     l.background = option_find_int_quiet(options, "background", 0);
     l.max_boxes = option_find_int_quiet(options, "max",30);
-    l.jitter = option_find_float(options, "jitter", .2);
+    l.jitter = option_find_float(options, "jitter", .2f);
     l.rescore = option_find_int_quiet(options, "rescore",0);
 
     l.thresh = option_find_float(options, "thresh", .5);
@@ -420,7 +420,7 @@ detection_layer parse_detection(list *options, size_params params)
     layer.object_scale = option_find_float(options, "object_scale", 1);
     layer.noobject_scale = option_find_float(options, "noobject_scale", 1);
     layer.class_scale = option_find_float(options, "class_scale", 1);
-    layer.jitter = option_find_float(options, "jitter", .2);
+    layer.jitter = option_find_float(options, "jitter", .2f);
     layer.random = option_find_int_quiet(options, "random", 0);
     layer.reorg = option_find_int_quiet(options, "reorg", 0);
     return layer;
@@ -522,9 +522,9 @@ dropout_layer parse_dropout(list *options, size_params params)
 
 layer parse_normalization(list *options, size_params params)
 {
-    float alpha = option_find_float(options, "alpha", .0001);
-    float beta =  option_find_float(options, "beta" , .75);
-    float kappa = option_find_float(options, "kappa", 1);
+    float alpha = option_find_float(options, "alpha", .0001f);
+    float beta =  option_find_float(options, "beta" , .75f);
+    float kappa = option_find_float(options, "kappa", 1.f);
     int size = option_find_int(options, "size", 5);
     layer l = make_normalization_layer(params.batch, params.w, params.h, params.c, size, alpha, beta, kappa);
     return l;
@@ -655,9 +655,9 @@ learning_rate_policy get_policy(char *s)
 void parse_net_options(list *options, network *net)
 {
     net->batch = option_find_int(options, "batch",1);
-    net->learning_rate = option_find_float(options, "learning_rate", .001);
-    net->momentum = option_find_float(options, "momentum", .9);
-    net->decay = option_find_float(options, "decay", .0001);
+    net->learning_rate = option_find_float(options, "learning_rate", .001f);
+    net->momentum = option_find_float(options, "momentum", .9f);
+    net->decay = option_find_float(options, "decay", .0001f);
     int subdivs = option_find_int(options, "subdivisions",1);
     net->time_steps = option_find_int_quiet(options, "time_steps",1);
     net->notruth = option_find_int_quiet(options, "notruth",0);
@@ -668,9 +668,9 @@ void parse_net_options(list *options, network *net)
 
     net->adam = option_find_int_quiet(options, "adam", 0);
     if(net->adam){
-        net->B1 = option_find_float(options, "B1", .9);
-        net->B2 = option_find_float(options, "B2", .999);
-        net->eps = option_find_float(options, "eps", .0000001);
+        net->B1 = option_find_float(options, "B1", .9f);
+        net->B2 = option_find_float(options, "B2", .999f);
+        net->eps = option_find_float(options, "eps", .0000001f);
     }
 
     net->h = option_find_int_quiet(options, "height",0);

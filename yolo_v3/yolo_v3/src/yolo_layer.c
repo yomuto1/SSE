@@ -85,8 +85,8 @@ box get_yolo_box(float *x, float *biases, int n, int index, int i, int j, int lw
     box b;
     b.x = (i + x[index + 0*stride]) / lw;
     b.y = (j + x[index + 1*stride]) / lh;
-    b.w = (float)exp(x[index + 2*stride]) * biases[2*n]   / w;
-    b.h = (float)exp(x[index + 3*stride]) * biases[2*n+1] / h;
+    b.w = expf(x[index + 2*stride]) * biases[2*n]   / w;
+    b.h = expf(x[index + 3*stride]) * biases[2*n+1] / h;
     return b;
 }
 
@@ -235,7 +235,7 @@ void forward_yolo_layer(const layer l, network net)
             }
         }
     }
-    *(l.cost) = pow(mag_array(l.delta, l.outputs * l.batch), 2);
+    *(l.cost) = powf(mag_array(l.delta, l.outputs * l.batch), 2);
     printf("Region %d Avg IOU: %f, Class: %f, Obj: %f, No Obj: %f, .5R: %f, .75R: %f,  count: %d\n", net.index, avg_iou/count, avg_cat/class_count, avg_obj/count, avg_anyobj/(l.w*l.h*l.n*l.batch), recall/count, recall75/count, count);
 }
 
