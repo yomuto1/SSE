@@ -333,7 +333,7 @@ layer parse_yolo(list *options, size_params params)
             if (a[i] == ',') ++n;
         }
         for(i = 0; i < n; ++i){
-            float bias = atof(a);
+            float bias = (float)atof(a);
             l.biases[i] = bias;
             a = strchr(a, ',')+1;
         }
@@ -394,7 +394,7 @@ layer parse_region(list *options, size_params params)
             if (a[i] == ',') ++n;
         }
         for(i = 0; i < n; ++i){
-            float bias = atof(a);
+            float bias = (float)atof(a);
             l.biases[i] = bias;
             a = strchr(a, ',')+1;
         }
@@ -714,7 +714,7 @@ void parse_net_options(list *options, network *net)
         float *scales = calloc(n, sizeof(float));
         for(i = 0; i < n; ++i){
             int step    = atoi(l);
-            float scale = atof(p);
+            float scale = (float)atof(p);
             l = strchr(l, ',')+1;
             p = strchr(p, ',')+1;
             steps[i] = step;

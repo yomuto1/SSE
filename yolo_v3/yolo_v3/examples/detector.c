@@ -1,5 +1,7 @@
 #include "darknet.h"
 
+static FILE *fp;
+
 void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filename, float thresh, float hier_thresh, char *outfile, int fullscreen)
 {
     list *options = read_data_cfg(datacfg);
@@ -32,17 +34,33 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
         //resize_network(net, sized.w, sized.h);
         layer l = net->layers[net->n-1];
 
-
         float *X = sized.data;
+
+		fp = fopen("performance_results.ini", "w");
+
         time=what_time_is_it_now();
         network_predict(net, X);
-        printf("%s: Predicted in %f seconds.\n", input, what_time_is_it_now()-time);
-        int nboxes = 0;
-        detection *dets = get_network_boxes(net, im.w, im.h, thresh, hier_thresh, 0, 1, &nboxes);
+        fprintf(fp, "%s: network_predict 1st %f sec\n", input, what_time_is_it_now()-time);
+
+		int i;
+		time = what_time_is_it_now();
+		for (i = 0; i < 10; i++)
+		{
+			network_predict(net, X);
+		}
+		fprintf(fp, "%s: network_predict 100 times %f sec\n", input, what_time_is_it_now() - time);
+
+		int nboxes = 0;
+		time = what_time_is_it_now();
+		detection *dets = get_network_boxes(net, im.w, im.h, thresh, hier_thresh, 0, 1, &nboxes);
         //printf("%d\n", nboxes);
         //if (nms) do_nms_obj(boxes, probs, l.w*l.h*l.n, l.classes, nms);
         if (nms) do_nms_sort(dets, nboxes, l.classes, nms);
-        draw_detections(im, dets, nboxes, thresh, names, alphabet, l.classes);
+		fprintf(fp, "%s: post processing %f sec\n", input, what_time_is_it_now() - time);
+
+		fclose(fp);
+
+		draw_detections(im, dets, nboxes, thresh, names, alphabet, l.classes);
         free_detections(dets, nboxes);
         if(outfile){
             save_image(im, outfile);

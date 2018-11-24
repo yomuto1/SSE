@@ -128,7 +128,7 @@ float find_float_arg(int argc, char **argv, char *arg, float def)
     for(i = 0; i < argc-1; ++i){
         if(!argv[i]) continue;
         if(0==strcmp(argv[i], arg)){
-            def = atof(argv[i+1]);
+            def = (float)atof(argv[i+1]);
             del_arg(argc, argv, i);
             del_arg(argc, argv, i);
             break;
@@ -386,9 +386,9 @@ float *parse_fields(char *line, int n)
         done = (*c == '\0');
         if(*c == ',' || done){
             *c = '\0';
-            field[count] = strtod(p, &end);
-            if(p == c) field[count] = nan("");
-            if(end != c && (end != c-1 || *end != '\r')) field[count] = nan(""); //DOS file formats!
+            field[count] = (float)strtod(p, &end);
+            if(p == c) field[count] = nanf("");
+            if(end != c && (end != c-1 || *end != '\r')) field[count] = nanf(""); //DOS file formats!
             p = c+1;
             ++count;
         }
@@ -512,7 +512,7 @@ void scale_array(float *a, int n, float s)
 int sample_array(float *a, int n)
 {
     float sum = sum_array(a, n);
-    scale_array(a, n, 1./sum);
+    scale_array(a, n, 1.f/sum);
     float r = rand_uniform(0, 1);
     int i;
     for(i = 0; i < n; ++i){
@@ -574,22 +574,22 @@ int rand_int(int min, int max)
 float rand_normal()
 {
     static int haveSpare = 0;
-    static double rand1, rand2;
+    static float rand1, rand2;
 
     if(haveSpare)
     {
         haveSpare = 0;
-        return sqrtf(rand1) * sin(rand2);
+        return sqrtf(rand1) * sinf(rand2);
     }
 
     haveSpare = 1;
 
-    rand1 = rand() / ((double) RAND_MAX);
-    if(rand1 < 1e-100) rand1 = 1e-100;
-    rand1 = -2 * log(rand1);
-    rand2 = (rand() / ((double) RAND_MAX)) * TWO_PI;
+    rand1 = rand() / ((float) RAND_MAX);
+    if(rand1 < (float)1e-100) rand1 = (float)1e-100;
+    rand1 = -2 * logf(rand1);
+    rand2 = (rand() / ((float) RAND_MAX)) * TWO_PI;
 
-    return sqrtf(rand1) * cos(rand2);
+    return sqrtf(rand1) * cosf(rand2);
 }
 
 /*
@@ -629,7 +629,7 @@ float rand_scale(float s)
 {
     float scale = rand_uniform(1, s);
     if(rand()%2) return scale;
-    return 1./scale;
+    return 1.f/scale;
 }
 
 float **one_hot_encode(float *a, int n, int k)

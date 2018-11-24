@@ -127,14 +127,14 @@ int option_find_int_quiet(list *l, char *key, int def)
 float option_find_float_quiet(list *l, char *key, float def)
 {
     char *v = option_find(l, key);
-    if(v) return atof(v);
+    if(v) return (float)atof(v);
     return def;
 }
 
 float option_find_float(list *l, char *key, float def)
 {
     char *v = option_find(l, key);
-    if(v) return atof(v);
+    if(v) return (float)atof(v);
     fprintf(stderr, "%s: Using default '%lf'\n", key, def);
     return def;
 }
