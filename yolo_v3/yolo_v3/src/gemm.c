@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <math.h>
 
+#include "nmmintrin.h"
+
 void gemm_bin(int M, int N, int K, float ALPHA, 
         char  *A, int lda, 
         float *B, int ldb,
