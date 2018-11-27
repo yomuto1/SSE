@@ -1,0 +1,17 @@
+yolo_v3/.vs
+*.exe
+*.ilk
+*.pdb
+*.iobj
+*.ipdb
+*.pdb
+*.obj
+*.log
+*.tlog
+*.idb
+*.asm
+
+*.o
+*.out
+
+*.weights
