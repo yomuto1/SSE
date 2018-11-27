@@ -179,7 +179,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>../../pthreads-w32-2-9-1-release/Pre-built.2/include;include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../pthreads-w32-2-9-1-release/Pre-built.2/include;include;../../posix_inc</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>HAVE_STRUCT_TIMESPEC;_CRT_SECURE_NO_WARNINGS;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerOutput>AssemblyCode</AssemblerOutput>
       <AdditionalOptions>/Qvec-report:2 %(AdditionalOptions)</AdditionalOptions>
