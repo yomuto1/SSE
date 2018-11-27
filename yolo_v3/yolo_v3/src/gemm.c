@@ -93,19 +93,20 @@ void gemm_nn(int M, int N, int K, float ALPHA,
 	}
 #else
 	int i, j, k;
+	float *c;
 
 	for (i = 0; i < M; ++i) {
 		for (k = 0; k < K; ++k) {
 			register float A_PART = ALPHA * A[i*lda + k];
-			float *b = &B[k*ldb];
-			float *c = &C[i*ldc];
+			const float * __restrict b = &B[k*ldb];
+			c = &C[i*ldc];
 			for (j = 0; j < N - (N % 4); j++)
 			{
 				*c++ += A_PART * *b++;
 			}
-			for (j = N - (N % 4); j < N; ++j)
+			for (j = N - (N % 4); j < N; j++)
 			{
-				C[i*ldc + j] += A_PART * B[k*ldb + j];
+				*c++ += A_PART * *b++;
 			}
 		}
 	}
