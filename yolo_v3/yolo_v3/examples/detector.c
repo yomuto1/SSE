@@ -48,7 +48,7 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
 		{
 			network_predict(net, X);
 		}
-		fprintf(fp, "%s: network_predict 100 times %f sec\n", input, what_time_is_it_now() - time);
+		fprintf(fp, "%s: network_predict 10 times %f sec\n", input, what_time_is_it_now() - time);
 
 		int nboxes = 0;
 		time = what_time_is_it_now();

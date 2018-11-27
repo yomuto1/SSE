@@ -7,6 +7,8 @@
 
 #include "nmmintrin.h"
 
+#define HYUK_OPT_SSE (0)
+
 void gemm_bin(int M, int N, int K, float ALPHA, 
         char  *A, int lda, 
         float *B, int ldb,
@@ -73,21 +75,41 @@ void gemm(int TA, int TB, int M, int N, int K, float ALPHA,
     gemm_cpu( TA,  TB,  M, N, K, ALPHA,A,lda, B, ldb,BETA,C,ldc);
 }
 
-void gemm_nn(int M, int N, int K, float ALPHA, 
-        float *A, int lda, 
-        float *B, int ldb,
-        float *C, int ldc)
+void gemm_nn(int M, int N, int K, float ALPHA,
+	float *A, int lda,
+	float *B, int ldb,
+	float *C, int ldc)
 {
-    int i,j,k;
-    #pragma omp parallel for
-    for(i = 0; i < M; ++i){
-        for(k = 0; k < K; ++k){
-            register float A_PART = ALPHA*A[i*lda+k];
-            for(j = 0; j < N; ++j){
-                C[i*ldc+j] += A_PART*B[k*ldb+j];
-            }
-        }
-    }
+#if (0 == HYUK_OPT_SSE)
+	int i, j, k;
+
+	for (i = 0; i < M; ++i) {
+		for (k = 0; k < K; ++k) {
+			register float A_PART = ALPHA * A[i*lda + k];
+			for (j = 0; j < N; ++j) {
+				C[i*ldc + j] += A_PART * B[k*ldb + j];
+			}
+		}
+	}
+#else
+	int i, j, k;
+
+	for (i = 0; i < M; ++i) {
+		for (k = 0; k < K; ++k) {
+			register float A_PART = ALPHA * A[i*lda + k];
+			float *b = &B[k*ldb];
+			float *c = &C[i*ldc];
+			for (j = 0; j < N - (N % 4); j++)
+			{
+				*c++ += A_PART * *b++;
+			}
+			for (j = N - (N % 4); j < N; ++j)
+			{
+				C[i*ldc + j] += A_PART * B[k*ldb + j];
+			}
+		}
+	}
+#endif
 }
 
 void gemm_nt(int M, int N, int K, float ALPHA, 
@@ -96,7 +118,6 @@ void gemm_nt(int M, int N, int K, float ALPHA,
         float *C, int ldc)
 {
     int i,j,k;
-    #pragma omp parallel for
     for(i = 0; i < M; ++i){
         for(j = 0; j < N; ++j){
             register float sum = 0;
@@ -114,7 +135,6 @@ void gemm_tn(int M, int N, int K, float ALPHA,
         float *C, int ldc)
 {
     int i,j,k;
-    #pragma omp parallel for
     for(i = 0; i < M; ++i){
         for(k = 0; k < K; ++k){
             register float A_PART = ALPHA*A[k*lda+i];
@@ -131,7 +151,6 @@ void gemm_tt(int M, int N, int K, float ALPHA,
         float *C, int ldc)
 {
     int i,j,k;
-    #pragma omp parallel for
     for(i = 0; i < M; ++i){
         for(j = 0; j < N; ++j){
             register float sum = 0;
