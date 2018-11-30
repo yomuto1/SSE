@@ -147,11 +147,18 @@ void l2normalize_cpu(float *x, float *dx, int batch, int filters, int spatial)
 void normalize_cpu(float *x, float *mean, float *variance, int batch, int filters, int spatial)
 {
     int b, f, i;
-    for(b = 0; b < batch; ++b){
-        for(f = 0; f < filters; ++f){
-            for(i = 0; i < spatial; ++i){
-                int index = b*filters*spatial + f*spatial + i;
-                x[index] = (x[index] - mean[f])/(sqrtf(variance[f]) + .000001f);
+
+    for(b = 0; b < batch; ++b)
+	{
+        for(f = 0; f < filters; ++f)
+		{
+			const float tmp_mean_f32 = mean[f];
+			const float tmp_sqrt_var_f32 = sqrtf(variance[f]) + 0.000001f;
+			float *p_tmp_x = &x[b*filters*spatial + f * spatial];
+
+			for(i = 0; i < spatial; ++i)
+			{
+				p_tmp_x[i] = (p_tmp_x[i] - tmp_mean_f32) / tmp_sqrt_var_f32;
             }
         }
     }

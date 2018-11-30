@@ -97,7 +97,7 @@ void gemm_nn(int M, int N, int K, float ALPHA,
 
 	for (i = 0; i < M; ++i) {
 		for (k = 0; k < K; ++k) {
-			register float A_PART = ALPHA * A[i*lda + k];
+			const float A_PART = ALPHA * A[i*lda + k];
 			const float * __restrict b = &B[k*ldb];
 			c = &C[i*ldc];
 			for (j = 0; j < N - (N % 4); j++)
