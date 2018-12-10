@@ -94,15 +94,22 @@ void gemm_nn(int M, int N, int K, float ALPHA,
 #else
 	int i, j, k;
 	float *c;
+	__m128 v_A_PART;
+	__m128 v_c, v_b, v_mul, v_acc;
 
 	for (i = 0; i < M; ++i) {
 		for (k = 0; k < K; ++k) {
-			const float A_PART = ALPHA * A[i*lda + k];
 			const float * __restrict b = &B[k*ldb];
+			const float A_PART = ALPHA * A[i*lda + k];
+			v_A_PART = _mm_set1_ps(A_PART);
 			c = &C[i*ldc];
-			for (j = 0; j < N - (N % 4); j++)
+			for (j = 0; j < N - (N % 4); j+=4)
 			{
-				*c++ += A_PART * *b++;
+				v_c = _mm_loadu_ps(&c[j]);
+				v_b = _mm_load_ps(&b[j]);
+				v_mul = _mm_mul_ps(v_A_PART, v_b);
+				v_acc = _mm_add_ps(v_mul, v_c);
+				_mm_store_ps(&c[j], v_acc);
 			}
 			for (j = N - (N % 4); j < N; j++)
 			{
