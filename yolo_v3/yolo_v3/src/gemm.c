@@ -7,7 +7,7 @@
 
 #include "nmmintrin.h"
 
-#define HYUK_OPT_SSE (1)
+#define HYUK_OPT_SSE (0)
 
 void gemm_bin(int M, int N, int K, float ALPHA, 
         char  *A, int lda, 
